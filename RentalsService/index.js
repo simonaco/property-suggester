@@ -1,6 +1,6 @@
 const request = require('request');
 module.exports = function(context, req) {
-  context.log('Function execution start');
+  context.log('Find properties');
   const body = req.body;
   const options = {
     url: 'https://api.zoopla.co.uk/api/v1/property_listings.js',
