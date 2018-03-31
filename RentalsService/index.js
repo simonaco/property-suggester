@@ -1,7 +1,8 @@
 const request = require('request');
 module.exports = function(context, req) {
-  context.log('Find properties');
-  const body = req.body;
+  context.log('Function execution start');
+  const body = req.query;
+
   const options = {
     url: 'https://api.zoopla.co.uk/api/v1/property_listings.js',
     qs: {
@@ -14,12 +15,12 @@ module.exports = function(context, req) {
   };
   request(options, (err, result) => {
     if (err) {
-      context.log('Error' + err);
+      context.log(`Error: ${err}`);
       context.done();
       return;
     } else {
-      context.log(result.body);
-      context.done();
+      context.log(`Found ${result.body}`);
+      context.done(null, { res: { listings: JSON.parse(result.body) } });
     }
   });
 };
