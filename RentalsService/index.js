@@ -30,8 +30,9 @@ module.exports = function(context, req) {
       context.done(null, {
         res: {
           listings: {
-            initial_count: listings.result_count,
-            filteredCount: filteredListings.length,
+            area_name: listings.area_name,
+            country: listings.country,
+            result_count: filteredListings.length,
             apartments: filteredListings
           }
         }
