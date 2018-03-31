@@ -9,7 +9,11 @@ module.exports = function(context, req) {
       api_key: process.env.API_KEY,
       area: body.area,
       listing_status: body.listing_status,
-      order_by: body.order_by
+      order_by: body.order_by,
+      maximum_price: body.maximum_price,
+      minimum_beds: body.minimum_beds,
+      page_size: 100,
+      page_number: 1
     },
     method: 'GET'
   };
@@ -19,8 +23,26 @@ module.exports = function(context, req) {
       context.done();
       return;
     } else {
-      context.log(`Found ${result.body}`);
-      context.done(null, { res: { listings: JSON.parse(result.body) } });
+      const listings = JSON.parse(result.body);
+      context.log(`Found ${listings.result_count}`);
+      let filteredListings = filterData(JSON.parse(result.body));
+      filteredListings = _.without(filteredListings, undefined);
+      context.done(null, {
+        res: {
+          listings: {
+            initial_count: listings.result_count,
+            filteredCount: filteredListings.length,
+            apartments: filteredListings
+          }
+        }
+      });
     }
+  });
+};
+
+const filterData = listings => {
+  return _.map(listings.listing, listing => {
+    const rental_prices = listing.rental_prices;
+    if (rental_prices.shared_occupancy === 'N') return listing;
   });
 };
